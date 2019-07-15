@@ -1,1 +1,2 @@
-Something is in the log...
+scoot, 1563230145684
+Error reading file scoot.json, 1563230182011

@@ -21,7 +21,18 @@ Errors should also be logged (preferably in a human-readable format)
  * @param {string} file
  * @param {string} key
  */
-function get(file, key) {}
+function get(file, key) {
+  return fs
+    .readFile(file, 'utf-8')
+    .then(data => {
+      const val = JSON.parse(data)[key];
+      // console.log(val);
+      return fs.appendFile('log.txt', `${val}, ${Date.now()}\n`);
+    })
+    .catch(() =>
+      fs.appendFile('log.txt', `Error reading file ${file}, ${Date.now()}\n`)
+    );
+}
 
 /**
  * Sets the value of object[key] and rewrites object to file
