@@ -26,6 +26,12 @@ function get(file, key) {
     .readFile(file, 'utf-8')
     .then(data => {
       const val = JSON.parse(data)[key];
+      if (!val) {
+        return fs.appendFile(
+          'log.txt',
+          `Error invalid key ${key}, ${Date.now()}`
+        );
+      }
       // console.log(val);
       return fs.appendFile('log.txt', `${val}, ${Date.now()}\n`);
     })
