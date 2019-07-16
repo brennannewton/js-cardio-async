@@ -3,3 +3,11 @@ Error reading file scoot.json, 1563230182011
 Andrew, 1563231701467
 Error reading file scoot.json, 1563231838596
 Error invalid key yeet, 1563231889561
+scott.json username updated to scooter, 1563291995950
+Error reading file me.json, 1563292284080
+Error invalid key username, 1563292304864
+Deleted key username from scott.json, 1563293466963
+Error invalid key username, 1563293498919
+File andrew.json deleted, 1563295244817
+Error deleting file andrew.json, 1563295273093
+Error deleting file scoot.json, 1563295303273

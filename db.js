@@ -16,6 +16,10 @@ ex after running delete('user.json'):
 Errors should also be logged (preferably in a human-readable format)
 */
 
+/**
+ * Writes a line to the log file, appending a timestamp
+ * @param {string} str The string of data to be logged
+ */
 function log(str) {
   return fs.appendFile('log.txt', `${str}, ${Date.now()}\n`);
 }
@@ -37,22 +41,6 @@ async function get(file, key) {
   } catch (err) {
     return log(`Error reading file ${file}`);
   }
-  // return fs
-  //   .readFile(file, 'utf-8')
-  //   .then(data => {
-  //     const val = JSON.parse(data)[key];
-  //     if (!val) {
-  //       return fs.appendFile(
-  //         'log.txt',
-  //         `Error invalid key ${key}, ${Date.now()}\n`
-  //       );
-  //     }
-  //     // console.log(val);
-  //     return fs.appendFile('log.txt', `${val}, ${Date.now()}\n`);
-  //   })
-  //   .catch(() =>
-  //     fs.appendFile('log.txt', `Error reading file ${file}, ${Date.now()}\n`)
-  //   );
 }
 
 /**
@@ -61,21 +49,61 @@ async function get(file, key) {
  * @param {string} key
  * @param {string} value
  */
-function set(file, key, value) {}
+function set(file, key, value) {
+  // Open file, parse data, set object[key] to value, rewrite object to file
+  return fs
+    .readFile(file, 'utf-8')
+    .then(data => {
+      const obj = JSON.parse(data);
+      const val = obj[key];
+      if (!val) {
+        return log(`Error invalid key ${key}`);
+      }
+      obj[key] = value;
+      // console.log(JSON.stringify(obj));
+      log(`${file} ${key} updated to ${value}`);
+      return fs.writeFile(file, JSON.stringify(obj));
+    })
+    .catch(() => log(`Error reading file ${file}`));
+}
 
 /**
  * Deletes key from object and rewrites object to file
  * @param {string} file
  * @param {string} key
  */
-function remove(file, key) {}
+function remove(file, key) {
+  return fs
+    .readFile(file, 'utf-8')
+    .then(data => {
+      const obj = JSON.parse(data);
+      if (!obj[key]) {
+        return log(`Error invalid key ${key}`);
+      }
+      delete obj[key];
+      // console.log(JSON.stringify(obj));
+      log(`Deleted key ${key} from ${file}`);
+      return fs.writeFile(file, JSON.stringify(obj));
+    })
+    .catch(() => log(`Error reading file ${file}`));
+}
 
 /**
  * Deletes file.
  * Gracefully errors if the file does not exist.
  * @param {string} file
  */
-function deleteFile(file) {}
+async function deleteFile(file) {
+  try {
+    const data = await fs.unlink(file);
+    if (data) {
+      return log(`File ${file} does not exist`); // Idk what this does, but I think I need it
+    }
+    return log(`File ${file} deleted`);
+  } catch (err) {
+    return log(`Error deleting file ${file}`);
+  }
+}
 
 /**
  * Creates file with an empty object inside.
