@@ -121,7 +121,7 @@ async function createFile(file) {
       return log(`File ${file} already exists`);
     }
     log(`File ${file} created`);
-    return fs.writeFile(file, JSON.stringify({}));
+    return fs.writeFile(file, '{}');
   } catch (err) {
     return log(`Error creating file ${file}`);
   }
@@ -153,15 +153,19 @@ async function mergeData() {
       filename => filename.includes('.json') && !filename.includes('package')
     );
     // console.log(jsonFiles);
-    const objectList = jsonFiles.map(async jsonfile => {
-      const data = await fs.readFile(jsonfile);
-      console.log(data); // Logs nothing
-      const obj = JSON.parse(data);
-      return JSON.stringify(obj);
-    });
-    console.log(objectList);
-    // const mergedString = objectList.reduce((acc, obj) => acc + obj, '');
-    // console.log(mergedString);
+    const objectList = await Promise.all(
+      jsonFiles.map(jsonfile => fs.readFile(jsonfile))
+    );
+    // console.log(objectList);
+    const mergedString = objectList.reduce(
+      (acc, obj, i) => ({
+        ...acc,
+        [jsonFiles[i].split('.')[0]]: JSON.parse(obj),
+      }),
+      {}
+    );
+    log('Successful merge');
+    return fs.writeFile('merge.json', JSON.stringify(mergedString));
   } catch (err) {
     return log(`Error merging json files`);
   }
