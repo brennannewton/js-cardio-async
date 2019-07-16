@@ -55,12 +55,10 @@ function set(file, key, value) {
     .readFile(file, 'utf-8')
     .then(data => {
       const obj = JSON.parse(data);
-      const val = obj[key];
-      if (!val) {
+      if (!obj[key]) {
         return log(`Error invalid key ${key}`);
       }
       obj[key] = value;
-      // console.log(JSON.stringify(obj));
       log(`${file} ${key} updated to ${value}`);
       return fs.writeFile(file, JSON.stringify(obj));
     })
@@ -110,7 +108,24 @@ async function deleteFile(file) {
  * Gracefully errors if the file already exists.
  * @param {string} file JSON filename
  */
-function createFile(file) {}
+async function createFile(file) {
+  try {
+    const localFiles = await fs.readdir('./');
+    let fileExists = false;
+    localFiles.forEach(filename => {
+      if (filename === file) {
+        fileExists = true;
+      }
+    });
+    if (fileExists) {
+      return log(`File ${file} already exists`);
+    }
+    log(`File ${file} created`);
+    return fs.writeFile(file, JSON.stringify({}));
+  } catch (err) {
+    return log(`Error creating file ${file}`);
+  }
+}
 
 /**
  * Merges all data into a mega object and logs it.
@@ -130,7 +145,27 @@ function createFile(file) {}
  *    }
  * }
  */
-function mergeData() {}
+async function mergeData() {
+  // find all json files, stringify each obj, spread it into new object, write object new file
+  try {
+    const localFiles = await fs.readdir('./');
+    const jsonFiles = localFiles.filter(
+      filename => filename.includes('.json') && !filename.includes('package')
+    );
+    // console.log(jsonFiles);
+    const objectList = jsonFiles.map(async jsonfile => {
+      const data = await fs.readFile(jsonfile);
+      console.log(data); // Logs nothing
+      const obj = JSON.parse(data);
+      return JSON.stringify(obj);
+    });
+    console.log(objectList);
+    // const mergedString = objectList.reduce((acc, obj) => acc + obj, '');
+    // console.log(mergedString);
+  } catch (err) {
+    return log(`Error merging json files`);
+  }
+}
 
 /**
  * Takes two files and logs all the properties as a list without duplicates

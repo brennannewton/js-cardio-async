@@ -11,3 +11,14 @@ Error invalid key username, 1563293498919
 File andrew.json deleted, 1563295244817
 Error deleting file andrew.json, 1563295273093
 Error deleting file scoot.json, 1563295303273
+Error creating file andrew.json, 1563297872061
+File me.json created, 1563298664824
+File me.json deleted, 1563298699649
+File brennan.json created, 1563298770808
+File brennan.json already exists, 1563298811854
+Error merging json files, 1563300125477
+Error merging json files, 1563300155226
+Error merging json files, 1563300194319
+Error merging json files, 1563300255159
+Error merging json files, 1563300348048
+Error merging json files, 1563300365525
