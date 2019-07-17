@@ -26,3 +26,4 @@ Error merging json files, 1563304790876
 Error merging json files, 1563305061807
 Error merging json files, 1563305094512
 Successful merge, 1563305655023
+brennan.json email updated to brennanmnewton@gmail.com, 1563399785333
