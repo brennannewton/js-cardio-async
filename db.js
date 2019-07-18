@@ -19,27 +19,37 @@ Errors should also be logged (preferably in a human-readable format)
 /**
  * Writes a line to the log file, appending a timestamp
  * @param {string} str The string of data to be logged
+ * @param {Error} [err] Error
  */
-function log(str) {
-  return fs.appendFile('log.txt', `${str}, ${Date.now()}\n`);
+async function log(str, err) {
+  await fs.appendFile('log.txt', `${str}, ${Date.now()}\n`);
+  if (err) throw err;
 }
 
 /**
- * Logs the value of object[key]
+ * Logs the value of object[key] or the entire object
  * @param {string} file
  * @param {string} key
  */
-async function get(file, key) {
+async function get(file, key = '') {
   try {
     const data = await fs.readFile(file, 'utf-8');
     const obj = JSON.parse(data);
-    const val = obj[key];
-    if (!val) {
-      return log(`Error invalid key ${key}`);
+    if (key) {
+      const val = obj[key];
+      if (!val) {
+        return log(
+          `Error invalid key ${key}`, // Error message for log.txt
+          new Error(`Error invalid key "${key}"`) // Error message for controller.js
+        );
+      }
+      log(val);
+      return val;
     }
-    return log(val);
+    log(JSON.stringify(obj));
+    return JSON.stringify(obj);
   } catch (err) {
-    return log(`Error reading file ${file}`);
+    return log(`Error reading file ${file}`, err);
   }
 }
 
@@ -55,14 +65,11 @@ function set(file, key, value) {
     .readFile(file, 'utf-8')
     .then(data => {
       const obj = JSON.parse(data);
-      if (!obj[key]) {
-        return log(`Error invalid key ${key}`);
-      }
       obj[key] = value;
       log(`${file} ${key} updated to ${value}`);
       return fs.writeFile(file, JSON.stringify(obj));
     })
-    .catch(() => log(`Error reading file ${file}`));
+    .catch(err => log(`Error reading file ${file}`, err));
 }
 
 /**
@@ -76,14 +83,17 @@ function remove(file, key) {
     .then(data => {
       const obj = JSON.parse(data);
       if (!obj[key]) {
-        return log(`Error invalid key ${key}`);
+        return log(
+          `Error invalid key ${key}`,
+          new Error(`Error invalid key "${key}"`)
+        );
       }
       delete obj[key];
       // console.log(JSON.stringify(obj));
       log(`Deleted key ${key} from ${file}`);
       return fs.writeFile(file, JSON.stringify(obj));
     })
-    .catch(() => log(`Error reading file ${file}`));
+    .catch(err => log(`Error reading file ${file}`, err));
 }
 
 /**
@@ -95,20 +105,23 @@ async function deleteFile(file) {
   try {
     const data = await fs.unlink(file);
     if (data) {
-      return log(`File ${file} does not exist`); // Idk what this does, but I think I need it
+      return log(
+        `File ${file} does not exist`,
+        new Error(`Error deleting file. ${file} does not exist`)
+      ); // Idk what this does, but I think I need it
     }
     return log(`File ${file} deleted`);
   } catch (err) {
-    return log(`Error deleting file ${file}`);
+    return log(`Error deleting file ${file}`, err);
   }
 }
 
 /**
- * Creates file with an empty object inside.
+ * Creates file with content inside.
  * Gracefully errors if the file already exists.
  * @param {string} file JSON filename
  */
-async function createFile(file) {
+async function createFile(file, content) {
   try {
     const localFiles = await fs.readdir('./');
     let fileExists = false;
@@ -118,12 +131,15 @@ async function createFile(file) {
       }
     });
     if (fileExists) {
-      return log(`File ${file} already exists`);
+      return log(
+        `File ${file} already exists`,
+        new Error(`Error creating file. ${file} already exists`)
+      );
     }
     log(`File ${file} created`);
-    return fs.writeFile(file, '{}');
+    return fs.writeFile(file, JSON.stringify(content));
   } catch (err) {
-    return log(`Error creating file ${file}`);
+    return log(`Error creating file ${file}`, err);
   }
 }
 
@@ -167,7 +183,7 @@ async function mergeData() {
     log('Successful merge');
     return fs.writeFile('merge.json', JSON.stringify(mergedString));
   } catch (err) {
-    return log(`Error merging json files`);
+    return log(`Error merging json files`, err);
   }
 }
 
