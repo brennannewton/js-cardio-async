@@ -27,3 +27,29 @@ Error merging json files, 1563305061807
 Error merging json files, 1563305094512
 Successful merge, 1563305655023
 brennan.json email updated to brennanmnewton@gmail.com, 1563399785333
+brennan.json email updated to brennanmnewton@gmail.com, 1563465868001
+brennan.json email updated to brennanmnewton@gmail.com, 1563468266140
+Error reading file cj.json, 1563473501805
+Error reading file cj.json, 1563474077002
+File dean.json created, 1563477166013
+File dean.json already exists, 1563483958357
+{"firstname":"Dean","lastname":"Sumitro","glasses":true}, 1563485187454
+{"firstname":"Brennan","lastname":"Newton","email":"brennanmnewton@gmail.com"}, 1563485198102
+Error reading file b.json, 1563485207311
+{"firstname":"Brennan","lastname":"Newton","email":"brennanmnewton@gmail.com"}, 1563485234762
+Brennan, 1563485244992
+Error invalid key name, 1563485251291
+Error invalid key name, 1563485275705
+{"firstname":"Brennan","lastname":"Newton","email":"brennanmnewton@gmail.com"}, 1563486503611
+Deleted key email from brennan.json, 1563486630188
+Error invalid key email, 1563486659620
+Error reading file brennan.json, 1563486659625
+File dean.json already exists, 1563486953759
+File dean.json deleted, 1563487946610
+Error deleting file dean.json, 1563487975271
+Successful merge, 1563490434999
+File merge.json deleted, 1563490504399
+Successful merge, 1563490529437
+Successful merge, 1563490580902
+{"firstname":"Brennan","lastname":"Newton"}, 1563490864358
+Brennan, 1563490881910

@@ -4,11 +4,7 @@
     "lastname": "Maney",
     "email": "amaney@talentpath.com"
   },
-  "brennan": {
-    "firstname": "Brennan",
-    "lastname": "Newton",
-    "email": "bnewton@talentpath.com"
-  },
+  "brennan": { "firstname": "Brennan", "lastname": "Newton" },
   "post": {
     "title": "Async/Await lesson",
     "description": "How to write asynchronous JavaScript",
