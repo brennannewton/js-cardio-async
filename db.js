@@ -195,7 +195,30 @@ async function mergeData() {
  *  union('scott.json', 'andrew.json')
  *  // ['firstname', 'lastname', 'email', 'username']
  */
-function union(fileA, fileB) {}
+async function union(fileA, fileB) {
+  // readfiles
+  // make list of prperties
+  // log properties
+  try {
+    const dataA = await fs.readFile(fileA, 'utf-8');
+    const dataB = await fs.readFile(fileB, 'utf-8');
+    const objA = JSON.parse(dataA);
+    const objB = JSON.parse(dataB);
+    // console.log(objA);
+    const keys = [];
+    Object.keys(objA).forEach(key => {
+      if (!keys.includes(key)) keys.push(key);
+    });
+    Object.keys(objB).forEach(key => {
+      if (!keys.includes(key)) keys.push(key);
+    });
+    // console.log(keys);
+    log(`${keys}`);
+    return keys;
+  } catch (err) {
+    return log(`Error ${fileA} U ${fileB}`, err);
+  }
+}
 
 /**
  * Takes two files and logs all the properties that both objects share
@@ -205,7 +228,27 @@ function union(fileA, fileB) {}
  *    intersect('scott.json', 'andrew.json')
  *    // ['firstname', 'lastname', 'email']
  */
-function intersect(fileA, fileB) {}
+async function intersect(fileA, fileB) {
+  try {
+    const dataA = await fs.readFile(fileA);
+    const dataB = await fs.readFile(fileB);
+    const keysA = Object.keys(JSON.parse(dataA));
+    const keysB = Object.keys(JSON.parse(dataB));
+    const intersection = [];
+
+    for (let i = 0; i < keysA.length; i++) {
+      for (let j = 0; j < keysB.length; j++) {
+        if (keysA[i] === keysB[j] && !intersection.includes(keysA[i])) {
+          intersection.push(keysA[i]);
+        }
+      }
+    }
+    log(`${intersection}`);
+    return intersection;
+  } catch (err) {
+    return log(`Error ${fileA} ^ ${fileB}`, err);
+  }
+}
 
 /**
  * Takes two files and logs all properties that are different between the two objects
@@ -215,7 +258,22 @@ function intersect(fileA, fileB) {}
  *    difference('scott.json', 'andrew.json')
  *    // ['username']
  */
-function difference(fileA, fileB) {}
+async function difference(fileA, fileB) {
+  try {
+    const dataA = JSON.parse(await fs.readFile(fileA));
+    const dataB = JSON.parse(await fs.readFile(fileB));
+    const keysA = Object.keys(dataA);
+    const keysB = Object.keys(dataB);
+    let diff = [];
+
+    diff = [...keysA.filter(key => !dataB[key])];
+    diff = [...diff, ...keysB.filter(key => !dataA[key])];
+    log(`${diff}`);
+    return diff;
+  } catch (err) {
+    return log(`Error ${fileA} - ${fileB}`, err);
+  }
+}
 
 module.exports = {
   get,

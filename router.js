@@ -15,6 +15,9 @@ const {
   patchRemove,
   deleteDeleteFile,
   postMerge,
+  patchUnion,
+  patchIntersect,
+  patchDifference,
 } = require(`./controller`);
 
 const handleRoutes = (request, response) => {
@@ -50,6 +53,18 @@ const handleRoutes = (request, response) => {
 
   if (pathname === '/merge' && request.method === 'POST') {
     return postMerge(request, response);
+  }
+
+  if (pathname === '/union' && request.method === 'PATCH') {
+    return patchUnion(request, response, query);
+  }
+
+  if (pathname === '/intersect' && request.method === 'PATCH') {
+    return patchIntersect(request, response, query);
+  }
+
+  if (pathname === '/difference' && request.method === 'PATCH') {
+    return patchDifference(request, response, query);
   }
 
   return notFound(request, response);

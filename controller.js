@@ -165,3 +165,57 @@ exports.postMerge = async (request, response) => {
     response.end(err.message);
   }
 };
+
+/**
+ * Performs a union on the keys of 2 objects
+ * @param {object} request
+ * @param {object} response
+ * @param {string} fileX Files to be unioned
+ */
+exports.patchUnion = async (request, response, { fileA, fileB }) => {
+  try {
+    const keyList = await db.union(fileA, fileB);
+    // console.log(keyList);
+    response.writeHead(200, { 'Content-type': 'text/html' });
+    response.end(JSON.stringify(keyList));
+  } catch (err) {
+    response.writeHead(400, { 'Content-type': 'text/html' });
+    response.end(err.message);
+  }
+};
+
+/**
+ * Performs an intersection on the keys of 2 objects
+ * @param {object} request
+ * @param {object} response
+ * @param {string} fileX Files to be intersected
+ */
+exports.patchIntersect = async (request, response, { fileA, fileB }) => {
+  try {
+    const intersection = await db.intersect(fileA, fileB);
+    // console.log(intersection);
+    response.writeHead(200, { 'Content-type': 'text/html' });
+    response.end(JSON.stringify(intersection));
+  } catch (err) {
+    response.writeHead(400, { 'Content-type': 'text/html' });
+    response.end(err.message);
+  }
+};
+
+/**
+ * Performs a difference on the keys of 2 objects
+ * @param {object} request
+ * @param {object} response
+ * @param {string} fileX Files to be differenced
+ */
+exports.patchDifference = async (request, response, { fileA, fileB }) => {
+  try {
+    const diff = await db.difference(fileA, fileB);
+    // console.log(intersection);
+    response.writeHead(200, { 'Content-type': 'text/html' });
+    response.end(JSON.stringify(diff));
+  } catch (err) {
+    response.writeHead(400, { 'Content-type': 'text/html' });
+    response.end(err.message);
+  }
+};
